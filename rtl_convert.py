@@ -3,14 +3,30 @@ import zipfile
 import os
 from bs4 import BeautifulSoup
 import shutil
+import re
+
+css = '''
+* { direction: rtl; letter-spacing: -0.03rem; }
+.title, .subtitle, h1, h2 { text-align: center; }
+.title, h1 { font-size: 1.8em; page-break-before: always; }
+.subtitle, h2 { font-size: 1.4em; }
+h1, h2, p { margin: 0 0 0.2em; }
+p { text-align: justify; }
+img { display: block; max-width: 100%; margin: 0 auto; }
+hr { page-break-after: always; }
+'''
+
+def convert_html_to_rtl(html):
+	html = re.sub(r'(\s(class|dir|alt|title|style)="[^"]*"|<p><\/p>)', '', html)
+	html = re.sub(r'<\/?span>', '', html)
+	html = re.sub(r'<style.*<\/style>', f'<style>\n{css}</style>', html)
+	html = re.sub(r'(\<html[^>]*)>', rf'\1 dir="rtl">', html)
+	return html
 
 @click.command()
 @click.argument('input_file', type=click.Path(exists=True))
 @click.argument('output_file', type=click.Path())
 def convert_epub_to_rtl(input_file, output_file):
-    def convert_html_to_rtl(html_content):
-        # Your existing HTML to RTL conversion logic here
-        pass
 
     # Create a temporary directory to work in
     temp_dir = 'temp_epub'
@@ -23,7 +39,7 @@ def convert_epub_to_rtl(input_file, output_file):
     # Modify the content
     for root, dirs, files in os.walk(temp_dir):
         for file in files:
-            if file.endswith('.html'):
+            if re.search(r"\.(html|xhtml)$", file):
                 file_path = os.path.join(root, file)
                 with open(file_path, 'r', encoding='utf-8') as html_file:
                     content = html_file.read()
