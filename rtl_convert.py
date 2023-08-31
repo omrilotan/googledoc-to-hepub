@@ -25,8 +25,10 @@ def convert_html_to_rtl(html):
 
 @click.command()
 @click.argument('input_file', type=click.Path(exists=True))
-@click.argument('output_file', type=click.Path())
+@click.argument('output_file', type=click.Path(), default='')
 def convert_epub_to_rtl(input_file, output_file):
+    if (output_file == ''):
+        output_file = input_file
 
     # Create a temporary directory to work in
     temp_dir = 'temp_epub'
