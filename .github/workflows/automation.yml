@@ -1,0 +1,37 @@
+name: Automation
+on:
+  push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.GH_TOKEN }}
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.x"
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+    - name: Format the code
+      run: python -m black .
+    - name: Check for code changes
+      id: check_changes
+      run: |
+        git diff --exit-code || echo "::set-output name=changed::true"
+    - name: Commit auto fixes
+      if: steps.check_changes.outputs.changed == 'true'
+      env:
+        USERNAME: ${{ github.actor }}
+        BRANCH: ${{ github.ref_name }}
+        REPO: ${{ github.repository }}
+        TOKEN: ${{ secrets.GH_TOKEN }}
+      run: |
+        git config --global user.email "${USERNAME}@users.noreply.github.com" --replace-all
+        git config --global user.name "$USERNAME" --replace-all
+        git commit -am "😎 Autofix"
+        git remote set-url origin https://${TOKEN}@github.com/$REPO.git
+        git push origin $BRANCH
+        exit 1
