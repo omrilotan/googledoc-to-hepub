@@ -25,6 +25,7 @@ def convert_html_to_rtl(html):
     html = re.sub(r"(\<html[^>]*)>", rf'\1 dir="rtl">', html)
     return html
 
+
 @click.command()
 @click.argument("input_file", type=click.Path(exists=True))
 @click.argument("output_file", type=click.Path(), default="")
