@@ -18,7 +18,12 @@ hr { page-break-after: always; }
 
 
 def convert_html_to_rtl(html):
-    """Converts HTML to RTL and adds CSS styles."""
+    """Converts HTML to RTL and adds CSS styles.
+    Parameters:
+    html: The HTML to convert.
+    Returns:
+    The converted HTML.
+    """
     html = re.sub(r'(\s(class|dir|alt|title|style)="[^"]*"|<p><\/p>)', "", html)
     html = re.sub(r"<\/?span>", "", html)
     html = re.sub(r"<style.*<\/style>", f"<style>\n{css}</style>", html)
