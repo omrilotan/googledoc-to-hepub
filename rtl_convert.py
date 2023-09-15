@@ -12,7 +12,7 @@ css = """
 .subtitle, h2 { font-size: 1.4em; }
 h1, h2, p { margin: 0 0 0.2em; }
 p { text-align: justify; }
-img { display: block; max-width: 100%; margin: 0 auto; }
+img { display: block; max-width: 100%; max-height: 100%; margin: 0 auto; }
 hr { page-break-after: always; }
 """
 
