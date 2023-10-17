@@ -70,6 +70,9 @@ def convert_epub_to_rtl(input_file, output_file):
     spine_tag = soup.find("spine")
     if spine_tag:
         spine_tag["page-progression-direction"] = "rtl"
+    # if there is only one image, make it the cover image
+    if len(soup.find_all("item", {"media-type": re.compile("image")})) == 1:
+        soup.find("item", {"media-type": re.compile("image")})["properties"] = "cover-image"
     with open(opf_path, "w", encoding="utf-8") as opf_file:
         opf_file.write(str(soup))
 
